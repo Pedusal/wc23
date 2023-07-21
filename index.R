@@ -1,0 +1,695 @@
+## ----child = "euro22.rmd"-----------------------------------------------------------------
+
+## ----setup, include=FALSE-----------------------------------------------------------------
+
+rm(list=ls())  # REMOVE ALL OBJECTS
+### Asenna hyvaksi havaitut paketit ######
+# pkgs <- c("data.table", # used for data import
+#           "car",        # used for testing linear hypothesis
+#           "haven",      # used for data import
+#           #"tidyverse",  # data manipulation etc
+#           "broom",      # for working with model coefficients and model summaries efficiently
+#           "lubridate",  # used for creating timestamps
+#           "DT",         # for displaying data_frames nicely
+#           "GGally",     # for "ggpairs" plot
+#           "ggfortify",
+#           "plotly")  # for enhancing plots
+# 
+# install.packages(c(pkgs))
+# loaded_pkgs <- lapply(c(pkgs), library, character.only = TRUE)
+# 
+# library(readxl)
+
+#Sys.which("make")
+
+#install.packages("https://cran.r-project.org/src/contrib/Archive/rlang/rlang_1.0.2.tar.gz", repos = NULL, type="source")
+
+##install.packages("gt")
+##library(gt)
+# library(dplyr)
+
+#devtools::install_github('rensa/ggflags')
+
+
+## ----aloitus, include=FALSE---------------------------------------------------------------
+####### Aseta tyoskentely kansio ja lataa veikkauset ###########
+
+#Get the working directory:
+#getwd()
+library(readxl)
+library(dplyr)
+library(knitr)
+#Setup the working directory:
+#setwd("C:/Users/Pedu/Documents/GitHub/euro22/data")
+myFiles <- list.files(pattern = "xlsx$")
+veikkaukset <- lapply(myFiles, function(x) read_excel(x))
+
+
+### Funktio isoja alkukirjaimia varten
+simpleCap <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+      sep="", collapse=" ")
+}
+
+
+
+
+## ----alustetaan muuttujia, warning=FALSE, include=FALSE-----------------------------------
+Eurodata <- read.table("Data/Eurodata.txt")
+Eurodata_lkm <- read.table("Data/Eurodata_lkm.txt")
+en_fi_country_colors <- read.table("Data/en_fi_country_colors.txt")
+
+
+################### Hae oikea rivi ################
+
+oikearivi <- read_excel("Data/11oikearivi.xlsx")
+
+######## maaliporssi df luonti#################
+maaliporssi <- oikearivi %>%   
+  filter(!is.na(oikearivi[,10])
+                 )
+
+maaliporssi  <- as.data.frame(maaliporssi[-1,10:12])
+
+###### Muokkaaa  sopivaksi #############
+
+oikearivi <- oikearivi %>%   
+  filter(!is.na(oikearivi[,4])
+                 )
+
+############## luo pelit vector
+pelit <- c(1:(length(oikearivi$...3)-2))
+#pelit[1] <- c("Nimi")
+#pelit[2] <- c("Yhteensa")
+
+pelit_juoksevanro <- c(1:length(pelit))
+
+### pelit vektoriin pelien nimet #####
+for (i in pelit_juoksevanro) {
+  pelit[i] <- c(paste(oikearivi$...3[i], "-", oikearivi$...5[i]))
+}
+
+############## pistetaulu nimet vector
+pt_nimet <- c(1:length(oikearivi$...3)+3)
+pt_nimet[1] <- c("Nimi")
+pt_nimet[2] <- c("Yhteensa")
+pt_nimet[3] <- c("Maalit")
+
+for (i in pelit_juoksevanro) {
+  pt_nimet[i+3] <- c(paste(oikearivi$...3[i], "-", oikearivi$...5[i]))
+}
+
+#### luodaan pelaajat vektori #####
+pelaajat <- c(1:(length(veikkaukset)))
+
+pelaajat[1] <- c("Tulokset")
+
+if (length(veikkaukset) > 0) {
+for (u in 2:length(pelaajat)) {
+  veikkaus <- data.frame(veikkaukset[u]) 
+  pelaajat[u] <- veikkaus[[1,5]]
+  #pelaaja <- veikkaus[[1,5]]
+}
+}
+
+
+## ----df idea, warning=FALSE, include=FALSE------------------------------------------------
+####### Tee jokaisesta vaikkauksesta oma dataframe ###########
+
+
+
+## ----luodaan df:iä, warning=FALSE, include=FALSE------------------------------------------
+
+################# luo veikkaustaulu
+veikkaustaulu <- matrix(NA,length(pelaajat),length(pelit)+1)
+
+vt_nimet <- c(1:(length(pelit)+1))
+vt_nimet[1] <- c("Nimi")
+vt_nimet[2:(length(pelit)+1)] <- c(pelit)
+
+colnames(veikkaustaulu) <- c(vt_nimet)
+veikkaustaulu <- as.data.frame(veikkaustaulu)
+
+# df = dataframe
+# old.var.name = The name you don't like anymore
+# new.var.name = The name you want to get
+
+#names(veikkaustaulu)[names(veikkaustaulu) == 'Yhteensa'] <- '____'
+
+
+##### lisataan pelaajat veikkaustauluun #######
+veikkaustaulu$Nimi <- pelaajat
+
+
+################# Luo Pistetaulu ###################
+
+pistetaulu <- matrix(NA,length(pelaajat)-1,length(pt_nimet))
+colnames(pistetaulu) <- c(pt_nimet)
+pistetaulu <- as.data.frame(pistetaulu)
+#########################################################################
+
+
+
+## ----LUO_maalintekijataulu, echo=FALSE, warning=FALSE-------------------------------------
+################ luo Maalintekijä taulu ja täytä se ######################
+maalintekijat <- matrix(NA,length(pelaajat)-1,6)
+colnames(maalintekijat) <- c("nimi", "Maalintekija1", "Maalintekija2", "Maalintekija3", "Maalintekija4", "Maalintekija5")
+maalintekijat <- as.data.frame(maalintekijat)
+
+
+## ----TAYTA_maalintekijataulu, echo=FALSE, warning=FALSE-----------------------------------
+### sisalto
+if (length(veikkaukset) > 0) {
+for (uu in 2:length(veikkaukset)) {
+  veikkaus <- data.frame(veikkaukset[uu])
+  
+  maalintekijat[uu-1,1] <- veikkaus[[1,5]]
+  
+  veikkaus <- veikkaus %>%   
+  filter(!is.na(veikkaus[,10])
+  )
+         
+  maalintekijat[uu-1,2:6] <- c(sort(veikkaus$...10[2:6]))
+}
+}
+
+# luodaan nolla pistettä sisältävä vector ja laitetaan se tauluun
+maalintekijat$Maalit <- c(1:length(maalintekijat[,1]))*0
+
+######## lisataan maaleja maalit sarakkeeseen
+
+if (length(veikkaukset) > 0) {
+for (i in 1:length(maalintekijat[,1])) { # haetaan osallistujan maalintekijat
+  pelaajat_maalarit <- c(maalintekijat[i,2:6])
+  
+  for (ii in 1:length(pelaajat_maalarit)) { # haetaan pelaaja
+    maalari <-pelaajat_maalarit[ii]
+    
+    for (iii in 1:length(maaliporssi[,1])) { # katsotaan onko pelaaja maalipörssissa
+      maalintekija <- maaliporssi[iii,1]
+      if (is.na(maalintekija)) {
+        ## do nothing
+      } else if (maalari == maalintekija) { #jos maalari porssissa lisataan pisteita
+        maalintekijat$Maalit[i] <- as.numeric(maalintekijat$Maalit[i]) + 
+                                      as.numeric(maaliporssi[iii,3])
+      }
+    }
+    
+  }
+  
+}
+}
+###########################################################################
+
+
+## ----LUO_final4taulu, echo=FALSE, warning=FALSE-------------------------------------------
+####### valiera taulu luonti #####################
+final4taulu <- matrix(NA,length(pelaajat),5)
+final4taulu <- as.data.frame(final4taulu)
+
+
+## ----final4taulu TAYTTO, echo=FALSE-------------------------------------------------------
+################# taytetaan final4taulu
+colnames(final4taulu) <- c("Mestari","Välierämaa1","Välierämaa2",
+                          "Välierämaa3","Välierämaa4")
+rownames(final4taulu) <- pelaajat
+
+if (length(veikkaukset) > 0) {
+## haetaan mestari tauluun
+for (i in 1:length(veikkaukset)) {
+  final4taulu[i,1] <- as.data.frame(veikkaukset[i])[5,18] #haetaan mestari
+}
+
+## haetaan valieramaat
+for (i in 1:length(veikkaukset)) {
+  final4taulu[i,2:5] <- sort( # aakkostetaan
+                          as.data.frame(veikkaukset[i])[5:8,17] #haetaan valiera
+                            )
+                          }
+##### isot kirjaimet kaikille kaikkiin maihin
+  final4taulu <- as.data.frame(apply(final4taulu, c(1,2), simpleCap))
+}
+
+
+## ----final4 pisteytys, message=FALSE, warning=FALSE, include=FALSE------------------------
+valierat_lkm <- c()
+
+for (i in 2:length(pelaajat)) {
+
+valierat_lkm[i-1] <- length(
+              intersect(c(as.vector(final4taulu[1,2:5])), 
+                      c(as.vector(final4taulu[i,2:5])))
+            ) * 5
+
+}
+
+
+
+## ----aloitus moi, echo=FALSE, warning=FALSE-----------------------------------------------
+## Sano moi
+#print("Hello Euro22")
+
+print(paste("Hello Euro22!", "Sivu päivitetty:", Sys.time()))
+
+
+
+## ----pelipaiva 8, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE-----------------
+## ## tee taulu
+## library(ggplot2)
+## Sys.Date()
+## 
+## veikkaustaulu.t <- as.data.frame(t(veikkaustaulu)[-1,]) # transpose
+## colnames(veikkaustaulu.t) <- c(pelaajat)
+## 
+## paivan_pelit <- subset(veikkaustaulu,
+## 
+## bp <- ggplot(veikkaustaulu.t, aes(x=Ella,
+##                                   y=pelit,
+##                                   group = Tulokset
+##                                     )) +
+##   geom_point(aes(color=Ella)) +
+##   geom_line(aes(color=Ella))+
+##   geom_hline(yintercept = 0.25)+
+##   facet_wrap(~kausi,ncol = 3)+
+##   scale_color_gradient(low="#33CC33", high="#CCFFCC")+
+##   theme_dark()+
+##   #geom_smooth(method = "lm")+
+##    xlab("Neljännes") +
+##   #ylab("Otoksen poikkeama väestöstä (prosenttiyksikköä)")+
+##   scale_y_continuous(labels=percent_format()) +
+## labs(title = paste("Jääkiekkoa harrastavien poikien syntymäajat \nneljänneksittäin kausilla 2004-2016, ","n =",toString(sum(jun[,6]))))
+## 
+## print(bp)
+## 
+
+
+## ----pistetaulu TAYTTo, warning=FALSE, include=FALSE--------------------------------------
+if (length(veikkaukset) > 0) {
+
+###### Taytetaan pistetaulu eli tehdaan tarkistus ja laitetaan pisteet #########
+
+library(dplyr)
+library(knitr)
+ 
+####### Maalintekijat pistetauluun ####################################
+pistetaulu$Maalit <- maalintekijat$Maalit
+
+
+
+############ Aseta tarkistussarjat ##################
+
+pelatut_pelit_lkm <- oikearivi %>%   
+  filter(!is.na(oikearivi[,6])
+                 )
+
+
+
+koti <- oikearivi$...6 
+vieras <- oikearivi$...8
+koti <- as.numeric(koti)
+
+merkki <- c(1:length(pelatut_pelit_lkm$...2))
+merkki[1:length(koti)] <- NA
+
+x <- c(1:length(pelatut_pelit_lkm$...2))
+for (i in x) {
+  if (koti[i]>vieras[i]){
+    merkki[i] <- 1
+  } else if (koti[i] == vieras[i]) {
+    merkki[i] <- 2
+  } else if (koti[i]<vieras[i]) {
+    merkki[i] <- 3
+  }
+}
+
+
+
+################### Veikkausten tarkistus ja lisays pistetauluun #######
+
+y <- c(2:length(veikkaukset))
+
+
+for (u in y) {
+  tarkistettava <- data.frame(veikkaukset[u])
+  pistetaulu[u-1, 1] <- tarkistettava[1,5]  ## asetetaan veikkaajan nimi
+  
+  tarkistettava <- tarkistettava %>% 
+    filter(!is.na(...6),
+         !is.na(...8)
+  )
+  
+  koti1 <- tarkistettava$...6
+  vieras1 <- tarkistettava$...8
+  koti1 <- as.numeric(koti1)
+
+  ## Asetetaan pelin merkki
+  merkki1 <- c(1:length(koti1))
+  merkki1[1:length(koti1)] <- NA
+    x <- c(1:length(pelatut_pelit_lkm$...2))
+
+  for (i in x) { 
+    if(koti1[i]>vieras1[i]){ ## Kotivoitto
+      merkki1[i] <- 1
+      } else if (koti1[i] == vieras1[i]) { ## Tasapeli
+        merkki1[i] <- 2
+      } else if (koti1[i]<vieras1[i]) { ## Vierasvoitto
+        merkki1[i] <- 3
+      }
+    }
+
+  ### Pisteet pistetauluun
+  x <- c(1:length(pelatut_pelit_lkm$...2))
+  for (i in x) {
+    if(koti[i] == koti1[i] & vieras[i] == vieras1[i]) { # taysin oikein
+       pistetaulu[u-1, i+3] <- c(5)
+       } else if (merkki[i] == merkki1[i] ## merkki ja toisen maalit oikein
+                  & (koti[i] == koti1[i] 
+                  | vieras[i] == vieras1[i])){ 
+          pistetaulu[u-1, i+3] <- c(3)
+       } else if (merkki[i] == merkki1[i]) { ## merkki oikein
+          pistetaulu[u-1, i+3] <- c(2)
+       } else { ## ei pisteita
+          pistetaulu[u-1, i+3] <- c(0)
+       }
+  }
+  
+
+}
+
+#####
+##### Välierämaat pistetauluun
+
+pistetaulu$Välierät <- valierat_lkm
+
+#####
+#################### Pistetaulu summaus
+pistetaulu$Yhteensa <- apply(pistetaulu[1:6,1:length(pelatut_pelit_lkm$...2)+2], 1, sum)
+sort(pistetaulu$Yhteensa)
+
+pistetaulu$Yhteensa <- pistetaulu$Yhteensa + pistetaulu$Välierät
+
+}
+
+
+## ----pisteet printtaus, echo=FALSE, message=FALSE, warning=FALSE--------------------------
+#install.packages("formattable")
+library(formattable)
+library(DT)
+
+### sortataan pistetaulu ennen piirtämistä
+pistetaulu <- pistetaulu[order(-pistetaulu$Yhteensa),]
+
+##nimetaan rivit uudelleen, jotta ovat nro. jarjestyksessa
+riviennimet <- c(1:(length(pelaajat)-1))
+
+rownames(pistetaulu) <- c(riviennimet)
+###
+
+myForm <- function(x) {
+              formatter('span',
+                        style = x ~ style(
+                          color = ifelse(x > 0, "blue",
+                                         ifelse(x < 0, red, "white"))
+                        ))
+}
+
+as.datatable(formattable(pistetaulu,
+              list(
+                Nimi = formatter("span", style = ~ style(
+                  color = "black",font.weight = "bold")),
+                Yhteensa = color_tile("white", "green"),
+                Maalit = color_tile("white", "red"),
+                area(col=4:length(pistetaulu[1,]) ) ~ color_tile(
+                  "transparent", "lightskyblue")
+                     
+              )
+            ),
+            #selection = 'none', rownames = '', filter = 'none',
+            extensions = c(#'Buttons',
+                           'FixedColumns'),
+            options = list(
+                      dom = 't',
+                      scrollX = TRUE,
+                      #scrollCollapse = TRUE,
+                      fixedColumns = list(leftColumns = 2)
+                      #order = list(list(2, 'desc'))
+            )
+)
+
+
+
+
+## ----veikkaustaulu TAYTTO, include=FALSE--------------------------------------------------
+library(formattable)
+library(dplyr)
+#library(knitr)
+
+############ tulokset veikkaustauluun ###
+  veikkaus <- data.frame(veikkaukset[1])
+
+if (length(veikkaukset)) {
+  veikkaus <- veikkaus %>%   
+  filter(!is.na(veikkaus[,6])
+                  )
+}
+ 
+for (iii in 1:length(veikkaus$...2)) {
+  
+    veikkaustaulu[1,1+iii] <-    c(paste(as.character(veikkaus$...6[iii]),
+                                         "-",
+                                         as.character(veikkaus$...8[iii])))
+}
+
+######################################## 
+
+  
+ 
+########## Lisataan veikkaukset veikkaustauluun #########
+
+## haetaan yksittainen veikkaus kasittelyyn
+if (length(veikkaukset)) {
+
+for (uu in 2:(length(veikkaukset))) {
+  veikkaus <- data.frame(veikkaukset[uu])
+  
+  veikkaus <- veikkaus %>%   
+  filter(!is.na(veikkaus[,6])
+                  )
+  ## lisataan veikkaajan rivi veikkaustauluun
+  for (iii in 1:length(pelit)) {
+  
+    veikkaustaulu[uu,1+iii] <-    c(paste(as.character(veikkaus$...6[iii]),
+                                          "-",
+                                          as.character(veikkaus$...8[iii])))
+  }
+}
+
+}
+
+
+## ----veikkaustaulu piirtaminen, echo=FALSE------------------------------------------------
+library(formattable)
+library(dplyr)
+#library(knitr)
+
+as.datatable(
+            formattable(
+              veikkaustaulu,
+              list(
+                area(row=1) ~ formatter("span", 
+    style = ~ style(color = "green", font.weight = "bold"))
+              )
+            )
+            ,
+            #selection = 'none', #filter = 'none',
+            rownames = '', 
+            extensions = c(#'Buttons',
+                           'FixedColumns'),
+            options = list(
+                      dom = 't',
+                      columnDefs = list(list(
+                        className = 'dt-center', targets = 3:length(pelit)-1)),
+                      scrollX = TRUE,
+                      #scrollCollapse = TRUE,
+                      fixedColumns = list(leftColumns = 2)
+                      )
+)
+
+
+
+## ----maalintekijät piirtaminen, echo=FALSE------------------------------------------------
+library(formattable)
+library(dplyr)
+
+as.datatable(
+  formattable(maalintekijat)
+  ,
+            options = list(
+                      dom = 't',
+                      columnDefs = list(list(
+                        className = 'dt-center', 
+                        targets = length(maalintekijat[1,]))
+                        ),
+                      scrollX = TRUE,
+                      scrollCollapse = TRUE,
+                      fixedColumns = list(leftColumns = 2)
+                      )
+)
+
+
+
+## ----final4taulu PIIRTAMINE, echo=FALSE---------------------------------------------------
+################# piirretaan final4taulu
+
+as.datatable(
+  formattable(final4taulu)
+  ,
+            options = list(
+                      dom = 't',
+                      columnDefs = list(list(
+                        className = 'dt-center', 
+                        targets = 1:5)
+                        ),
+                      scrollX = TRUE,
+                      #scrollCollapse = TRUE,
+                      fixedColumns = list(leftColumns = 2)
+                      )
+)
+
+
+
+## ----PIIRRA_mestarijakauma, eval=FALSE, include=FALSE-------------------------------------
+## library(ggplot2)
+## ################# piirretaan mestarit
+## 
+## Eurodata_mestari <- subset(Eurodata_lkm, ((Tyyppi == "Mestari" |
+##                                             Tyyppi =="Välierämaa") &
+##                                             !is.na(Sisalto)))
+## 
+## 
+## Eurodata_mestari <- Eurodata_mestari[order(-Eurodata_mestari$lkm),]
+## 
+## 
+## bp <- ggplot(Eurodata_mestari, aes(x=reorder(Tyyppi, -lkm)
+##                               ,y=lkm
+##                               ,fill=reorder(Sisalto, -lkm)
+##                                     )) +
+##   #facet_wrap(~Tyyppi,ncol = 2)
+##   geom_bar(stat="identity", width=0.7, position=position_dodge(width=0.8))    +
+##   xlab("") +
+##   ylab("Veikkausten määrä") +
+##   theme_classic() +
+##   scale_fill_manual(values=c("red", "orange", "slateblue4",
+##                              "lightblue", "blue", "yellow2",
+##                              "blue")) +
+##   geom_text(aes(label=lkm),
+##             position = position_dodge(width=0.8),
+##             vjust=1.5, colour="white", size=3.5)
+##   #geom_point(aes(color=Sisalto)) +
+##   #scale_color_gradient(low="#33CC33", high="#CCFFCC") +
+## 
+## 
+## print(bp)
+## 
+
+
+## ----PIIRRA_mestarijakauma_tst, eval=FALSE, include=FALSE---------------------------------
+## library(ggplot2)
+## library(forcats)
+## library(dplyr)
+## #library(tidyverse)
+## library(ggflags)
+## library(countrycode) # to convert country names to country codes
+## #library(tidytext) # for reorder_within
+## #library(scales) # for application of common formats to scale labels (e.g., comma, percent, dollar)
+## 
+## #countrycode::guess_field(Eurodata_lkm$id, min_similarity= 80)
+## 
+## ################# piirretaan mestarit
+## Eurodata_mestari <- subset(Eurodata_lkm, ((Tyyppi == "Mestari" |
+##                                             Tyyppi =="Välierämaa") &
+##                                             !is.na(Sisalto)
+##                                           )
+##                           )
+## 
+## Eurodata_mestari <- Eurodata_mestari %>%
+##   #filter((title %in% c("Lover") & country != "WW")) %>%
+##   mutate(id_lower_case = tolower(id)) %>%  # tehdaan id:sta lowercase
+##   mutate(lkm.fct = factor(lkm))
+## #%>%
+##   #mutate(lkm = fct_reorder(lkm.fct,lkm))
+## Eurodata_mestari <- Eurodata_mestari[order(-Eurodata_mestari$lkm),]
+## 
+## 
+## bp <- ggplot(Eurodata_mestari, aes(x=Tyyppi
+##                               ,y=lkm
+##                               #,fill=Sisalto
+##                                     )) +
+##   #facet_wrap(~Tyyppi,ncol = 2)
+##   geom_bar(stat="identity", width=0.7, position=position_dodge(width=0.8))    +
+##   xlab("") +
+##   #geom_col() +
+##   #geom_flag(x = 0, aes(country = id_lower_case), size = 10) +
+##   geom_flag( aes(country = id_lower_case), size = 10) +
+##   ylab("Veikkausten määrä") +
+##   theme_classic() +
+##   #scale_fill_manual(values = en_fi_country_colors$cc) +
+##   #scale_fill_manual(values=c("red", "yellow2", "slateblue4",
+##    #                          "green3", "orange", "olivedrab2",
+##     #                         "blue")) +
+##   geom_text(aes(label=lkm),
+##             position = position_dodge(width=0.8),
+##             vjust=1.5, colour="white", size=3.5)
+##   #geom_point(aes(color=Sisalto)) +
+##   #scale_color_gradient(low="#33CC33", high="#CCFFCC") +
+## 
+## 
+## print(bp)
+## 
+## 
+## bp <- ggplot(Eurodata_mestari, aes(x=reorder(Sisalto, -lkm)
+##                               ,y=lkm
+##                               ,fill=reorder(Sisalto, -lkm)
+##                                     )) +
+##   #geom_flag( aes(x=Tyyppi, country = id_lower_case)) +
+##   geom_flag( aes(country = id_lower_case)) +
+##   #geom_flag(y = -50, aes(image = id_lower_case))  +
+##   geom_bar(stat="identity", width=0.7, position=position_dodge(width=0.8))+
+##   #xlab("") +
+##   #ylab("Veikkausten määrä") +
+##   theme_classic() +
+##   #coord_flip() +
+##   geom_text(aes(label=lkm),
+##             position = position_dodge(width=0.8),
+##             vjust=1.5, colour="white", size=3.5)
+## print(bp)
+## 
+## bp <- ggplot(Eurodata_mestari, aes(x=reorder(Sisalto, lkm)
+##                               ,y=lkm
+##                               #,fill=reorder(Sisalto, -lkm)
+##                                     )) +
+##   #geom_flag( aes(x=Tyyppi, country = id_lower_case)) +
+##   geom_flag( aes(country = id_lower_case)) +
+##   #geom_flag(y = -50, aes(image = id_lower_case))  +
+##   geom_bar(stat="identity", width=0.7, position=position_dodge(width=0.8))+
+##   coord_flip() +
+##   facet_wrap(~Tyyppi,ncol = 2)
+##   #xlab("") +
+##   #ylab("Veikkausten määrä") +
+##   theme_classic() +
+##   #coord_flip() +
+##   #geom_text(aes(label=lkm),
+##          #   position = position_dodge(width=0.8),
+##           #  vjust=1.5, colour="white", size=3.5)
+## print(bp)
+## 
+## 
+## 
+##   ggplot(Eurodata_mestari,aes(Sisalto,lkm)) +
+##   geom_col(aes(lkm)) +
+##   geom_flag( aes(country = id_lower_case), size = 10) +
+##   theme_minimal()
+## 
+
+

@@ -1,0 +1,206 @@
+---
+title: "create_piirros_data"
+author: "pedusal"
+date: "14 7 2022"
+output: html_document
+---
+
+---
+title: "createUnijun"
+output: html_document
+---
+
+```{r setup, echo=FALSE}
+#rm(list=ls())  # REMOVE ALL OBJECTS
+### Asenna hyvaksi havaitut paketit ######
+ pkgs <- c("readxl", # used for data import
+           "dplyr",        # used for testing linear hypothesis
+           "knitr"  #used for data import
+           ,"gapminder"
+           ,"stringr"
+           ,"formattable"
+           ,"markdown"
+           ,"mame")
+ 
+           
+#install.packages(c(pkgs))
+#install.packages("formattable")
+#install.packages("DT")
+
+####### Aseta tyoskentely kansio ja lataa veikkauset ###########
+
+#Get the working directory:
+#getwd()
+library(readxl)
+library(dplyr)
+library(knitr)
+#Setup the working directory:
+setwd("Data")
+myFiles <- list.files(pattern = "xlsx$")
+veikkaukset <- lapply(myFiles, function(x) read_excel(x))
+
+#oikearivi <- read_excel("data/11oikearivi.xlsx")
+
+### Funktio isoja alkukirjaimia varten
+simpleCap <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+      sep="", collapse=" ")
+}
+
+```
+
+
+```{r maatdata include=FALSE}
+library(gapminder)
+
+
+urlfile <- 'https://raw.githubusercontent.com/umpirsky/country-list/master/data/fi_FI/country.csv'
+fi_FI <- read.csv(urlfile)
+
+urlfile <- 'https://raw.githubusercontent.com/umpirsky/country-list/master/data/en_FI/country.csv'
+en_FI <- read.csv(urlfile)
+
+en_fi_country_colors <-
+  data.frame(en_FI,
+             cc = I(country_colors[match(en_FI$value,
+                                         names(country_colors))]))
+
+en_fi_country_colors<-
+  data.frame(en_fi_country_colors,
+             maa = (fi_FI[match(en_fi_country_colors$id,
+                                         fi_FI$id),]))
+
+write.table(en_fi_country_colors, "Data/en_fi_country_colors.txt")
+#"Bosnia and Herzegovina"
+#Bosnia & Herzegovina
+```
+
+
+```{r Eurodata, include=FALSE}
+library(dplyr)
+library(knitr)
+library(stringr)
+#### Luodaan Eurodata df ###
+Eurodata <- data.frame(matrix(ncol = 7, nrow = 0))
+#####
+
+
+#####
+if (length(veikkaukset) > 0) {
+for (i in 2:length(veikkaukset)) {
+  veikkaus_apu <- as.data.frame(veikkaukset[i])
+  
+  #TopScorer
+  Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "TopScorer", "TS",
+                      veikkaus_apu[5,14],veikkaus_apu[5,15],NA,NA)
+              )
+  
+  #Mestari 
+    Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Mestari", "M",
+                      veikkaus_apu[5,18],NA,NA,NA)
+              )
+    
+  #Valieramaat
+  Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Välierämaa", "Välierämaa1",
+                      veikkaus_apu[5,17],NA,NA,NA)
+              )
+    Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Välierämaa", "Välierämaa2",
+                      veikkaus_apu[6,17],NA,NA,NA)
+              )  
+      Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Välierämaa", "Välierämaa3",
+                      veikkaus_apu[7,17],NA,NA,NA)
+              )  
+        Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Välierämaa", "Välierämaa4",
+                      veikkaus_apu[8,17],NA,NA,NA)
+              ) 
+
+  #Maalintekijat
+  Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Maalintekijä", "Maalintekijä1",
+                      veikkaus_apu[5,10],veikkaus_apu[5,11],NA,NA)
+              )
+    Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Maalintekijä", "Maalintekijä2",
+                      veikkaus_apu[6,10],veikkaus_apu[6,11],NA,NA)
+              )
+      Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Maalintekijä", "Maalintekijä3",
+                      veikkaus_apu[7,10],veikkaus_apu[7,11],NA,NA)
+              )
+        Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Maalintekijä", "Maalintekijä4",
+                      veikkaus_apu[8,10],veikkaus_apu[8,11],NA,NA)
+              )
+          Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Maalintekijä", "Maalintekijä5",
+                      veikkaus_apu[9,10],veikkaus_apu[9,11],NA,NA)
+              )
+ 
+}
+}
+#####
+
+### Eurodata col nimet   #########
+colnames(Eurodata) <- c("Nimi", "Tyyppi", "Tyyppikd",
+                        "Sisalto","Sisälto_tarkenne", "Tyyppi_lkm", "__")
+
+if (length(veikkaukset)>0) {
+## laitetaan iso alkukirjaimet KAIKKIALLE (jokaiseen muuttujaan)
+Eurodata <- as.data.frame(apply(Eurodata, c(1,2), simpleCap))
+
+## korvataan jostain tulevat nanat
+Eurodata[Eurodata == "NANA"] <- NA
+
+## korvataan Alankomaat -> Hollanti
+Eurodata[Eurodata == "Hollanti"] <- "Alankomaat"
+
+## trimmaus
+Eurodata <- Eurodata %>% 
+  mutate(across(where(is.character), str_trim, side = "both"))
+}
+```
+
+```{r Eurodata lkm, echo=FALSE}
+Eurodata_lkm = 
+  Eurodata %>% group_by(Tyyppi) %>% count(Sisalto) %>% mutate(lkm =n)
+
+Eurodata_lkm <- merge(Eurodata_lkm, en_fi_country_colors,
+      by.x = "Sisalto", by.y = "maa.value", all = TRUE) 
+
+### 
+```
+
+```{r}
+library(Matrix)
+library(data.table)
+
+veikkaukset1 <- unlist(veikkaukset)
+
+list_data <- Map(as.data.frame, veikkaukset)
+
+veikkaukset1 <- rbindlist(list_data, fill = T)
+
+
+```
+
+```{r Euroottelu luonti, echo=FALSE}
+#write.table(juniori, "data/tutkielmadata_varmuus.txt")
+```
+
+
+```{r Eurodatat data tiedostoon, echo=FALSE}
+write.table(Eurodata, "Data/Eurodata.txt")
+
+write.table(Eurodata_lkm, "Data/Eurodata_lkm.txt")
+
+```
+
+
+

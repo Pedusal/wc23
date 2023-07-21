@@ -1,0 +1,350 @@
+---
+title: "add_tulos"
+author: "pedusal"
+date: "2022-11-19"
+output: html_document
+---
+```{r setup install, include=FALSE}
+knitr::opts_chunk$set(
+	message = FALSE,
+	warning = FALSE,
+	include = FALSE
+)
+
+ pkgs <- c("rvest", # 
+           "polite",
+           "dplyr",  
+           "purrr",  
+           "stringr",        
+           "glue",     
+           "rlang",
+           "tidyr")
+ 
+install.packages(c(pkgs))
+install.packages("rvest")
+install.packages("XML")
+install.packages("xml2")
+install.packages("rlang")
+ 
+library(rvest)   # 0.3.5
+library(polite)  # 0.1.1
+library(dplyr)   # 0.8.5
+library(tidyr)   # 1.0.2
+library(purrr)   # 0.3.4
+library(stringr) # 1.4.0
+library(glue)    # 1.4.0
+library(rlang)   # 0.4.6
+library(XML)
+library(xml2)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	message = FALSE,
+	warning = FALSE,
+	include = FALSE
+)
+
+library(rvest)   # 0.3.5
+library(polite)  # 0.1.1
+library(dplyr)   # 0.8.5
+library(tidyr)   # 1.0.2
+library(purrr)   # 0.3.4
+library(stringr) # 1.4.0
+library(glue)    # 1.4.0
+library(rlang)   # 0.4.6
+library(XML)
+library(xml2)
+
+getwd()
+
+tulokset <- read_excel("Data/11oikearivi.xlsx")
+
+ottelutulokset <- matrix(NA,2,length(tulokset$...3)-2)
+
+
+url <- "https://www.livescores.com/football/world-cup/?tz=2"
+
+session <- bow(url)
+
+
+sessio_html <- scrape(session) %>% 
+  html_nodes("#content-center > div")
+
+#content-center > div > div:nth-child(3)
+
+linkki_df <- xml_find_all(sessio_html, xpath = "//a")
+
+linkit <- bind_rows(lapply(html_attrs(linkki_df), function(x) data.frame(as.list(x), stringsAsFactors=FALSE)))
+
+linkit <- linkit %>% filter(grepl('group', href))
+
+linkit <- linkit %>% filter(grepl('vs', href))
+
+linkit <- linkit %>% filter(class == "Td")
+```
+
+```{r ottelu linkit}
+ottelut_links_df <- linkit %>% 
+  ## separate out each component of the URL by / and give them a name
+  tidyr::separate(href, c(NA, NA, NA, "lohko", "ottelu","ottelu_id", NA), sep = "/") %>% 
+  ## glue together the "team_name" and "team_num" into a complete URL
+  mutate(link = glue("https://www.livescores.com/football/world-cup/{lohko}/{ottelu}/{ottelu_id}/?tz=2/"))
+
+# glimpse(ottelut_links_df)
+```
+
+```{r funktiot}
+#session <- bow("https://www.livescores.com/football/world-cup/group-a/senegal-vs-netherlands/663891/?tz=2")
+
+fottelu_pvm <- function(session) {
+  
+  ottelu_pvm_info <- scrape(session) %>% 
+    html_nodes("#__livescore > div:nth-child(8) > span:nth-child(2)") %>% 
+    html_text()
+}
+
+fottelu_time <- function(session) {
+
+  ottelu_time_info <- scrape(session) %>% 
+    html_nodes("#__livescore > div.he.ke > span.ie") %>% 
+    html_text()
+  
+}
+
+fhome_goals <- function(session) {
+
+  home_goals_info <- scrape(session) %>% 
+    html_nodes("#__livescore > div.he.ke > div.oe") %>% 
+    html_text()
+  
+ # home_goals_info <- strsplit(home_goals_info, "")
+  ## first value is blank so remove it
+  #num_assists_info_clean <- num_assists_info[-1]
+}
+
+
+faway_goals <- function(session) {
+
+  away_goals_info <- scrape(session) %>% 
+    html_nodes("#__livescore > div.he.ke > div.oe") %>% 
+    html_text()
+  
+  ## first value is blank so remove it
+  #num_assists_info_clean <- num_assists_info[-1]
+}
+```
+
+
+```{r funktiot ajo}
+library(polite)
+library(rvest)
+library(dplyr)
+
+fottelut_info <- function(link, ottelu_name) {
+  
+  #link <- "https://www.livescores.com/football/world-cup/group-a/qatar-vs-ecuador/587251/?tz=2/"
+  #ottelu_name <- "qat-ec"
+  
+  
+  ottelu_name <- ottelu_name
+  ## `bow()` for every URL link
+  session <- bow(link)
+  
+  ## scrape different stats
+  ottelu_pvm <- fottelu_pvm(session = session)
+
+  ottelu_time <- fottelu_time(session = session)
+
+  home_goals <- fhome_goals(session = session)
+  
+  away_goals <- faway_goals(session = session)
+  
+  
+  
+  ## combine stats into a data frame
+  resultados <- list(ottelu_name,ottelu_pvm, ottelu_time, home_goals, away_goals)
+  col_names <- c("game","ottelu_pvm", "ottelu_pvm", "home_goals", "away_goals") 
+  
+  premier_stats <- resultados %>% 
+    reduce(cbind) %>% 
+    as_tibble() %>% 
+    set_names(col_names) 
+  
+  ## A little message to keep track of how the function is progressing:
+  # cat(team_name, " done!")
+  
+  return(premier_stats)
+}
+```
+
+
+
+
+
+```{r scrape results}
+
+a <- fottelut_info("https://www.livescores.com/football/world-cup/group-a/qatar-vs-ecuador/587251/?tz=2/", "qat-ecu")
+
+safe_ottelut_info <- safely(fottelut_info)
+
+
+ottelut_tulokset_df_ALL <- map2(.x = ottelut_links_df$link, .y = ottelut_links_df$ottelu,
+                             ~ safe_ottelut_info(link = .x, ottelu_name = .y))
+
+## check out the first 4 results:
+glimpse(head(ottelut_tulokset_df_ALL, 4))
+```
+
+
+```{r maalintekija}
+#tournament-table-tabs-and-content > div.topScorers__tableWrapper > div
+url <- "https://s5.sir.sportradar.com/sportradar/en/1/season/59630"
+
+session <- bow(url)
+
+session
+
+sessio_html <- scrape(session) %>% 
+  html_nodes("#sr-container > div > div > div.container.container-main.contair-full-height-flex-auto > div > div > div > div:nth-child(8) > div.panel.margin-bottom > div > div > div > div > div > div > div > table")
+
+#detail
+#mc
+#tournament-table"
+
+ac_top_scorers <- sessio_html %>% 
+  html_table() %>% 
+  flatten_df() %>% 
+  select(-Ref.) %>% 
+
+#content-center > div > div:nth-child(3)
+
+linkki_df <- xml_find_all(sessio_html, xpath = "//a")
+
+linkit <- bind_rows(lapply(html_attrs(linkki_df), function(x) data.frame(as.list(x), stringsAsFactors=FALSE)))
+
+linkit <- linkit %>% filter(grepl('group', href))
+
+linkit <- linkit %>% filter(grepl('vs', href))
+
+linkit <- linkit %>% filter(class == "Td")
+```
+
+
+```{r cars}
+# combine above into one list
+resultados <- list(team_name, avg_age, avg_value, team_img)
+
+# specify column names
+col_name <- c("team", "avg_age", "avg_value", "img")
+
+# Combine into one dataframe
+j_league_age_value_raw <- resultados %>% 
+  reduce(cbind) %>% 
+  tibble::as_tibble() %>% 
+  set_names(col_name)
+
+glimpse(j_league_age_value_raw)
+```
+
+```{r pressure, echo=FALSE}
+library(rvest)   # 0.3.5
+library(polite)  # 0.1.1
+library(dplyr)   # 0.8.5
+library(tidyr)   # 1.0.2
+library(purrr)   # 0.3.4
+library(stringr) # 1.4.0
+library(glue)    # 1.4.0
+library(rlang)   # 0.4.6
+library(XML)
+library(xml2)
+
+url1 <- "https://us.soccerway.com/national/england/premier-league/20182019/regular-season/r48730/"
+
+session1 <- bow(url1)
+
+team_links <- scrape(session1) %>% 
+  html_nodes("#team_rank_row_676 > td.text.team.large-link > a") %>% 
+  html_attr("href")
+
+team_links_df <- team_links %>% 
+  tibble::enframe(name = NULL) %>% 
+  ## separate out each component of the URL by / and give them a name
+  tidyr::separate(value, c(NA, NA, NA, "team_name", "team_num"), sep = "/") %>% 
+  ## glue together the "team_name" and "team_num" into a complete URL
+  mutate(link = glue("https://us.soccerway.com/teams/england/{team_name}/{team_num}/squad/"))
+
+glimpse(team_links_df)
+```
+
+```{r pressure, echo=FALSE}
+library(rvest)   # 0.3.5
+library(polite)  # 0.1.1
+library(dplyr)   # 0.8.5
+library(tidyr)   # 1.0.2
+library(purrr)   # 0.3.4
+library(stringr) # 1.4.0
+library(glue)    # 1.4.0
+library(rlang)   # 0.4.6
+library(XML)
+library(xml2)
+
+url1 <- "https://www.livescores.com/football/world-cup/?tz=2"
+
+session1 <- bow(url1)
+
+session1
+
+
+team_links1 <- scrape(session1) %>% 
+  html_nodes("#content-center > div")
+
+
+
+#content-center > div > div:nth-child(3)
+
+li <- xml_find_all(team_links1, xpath = "//a")
+
+a <- bind_rows(lapply(html_attrs(li), function(x) data.frame(as.list(x), stringsAsFactors=FALSE)))
+
+a <- a %>% filter(grepl('group', href))
+
+a <- a %>% filter(grepl('vs', href))
+
+a <- a %>% filter(class == "Td")
+
+
+
+xml_structure(team_links1)
+
+
+
+
+%>% 
+  html_attr("id")
+
+team_links1
+
+
+team_links_df <- team_links %>% 
+  tibble::enframe(name = NULL) %>% 
+  ## separate out each component of the URL by / and give them a name
+  tidyr::separate(value, c(NA, NA, NA, "team_name", "team_num"), sep = "/") %>% 
+  ## glue together the "team_name" and "team_num" into a complete URL
+  mutate(link = glue("https://us.soccerway.com/teams/england/{team_name}/{team_num}/squad/"))
+
+glimpse(team_links_df)
+
+
+pg <- read_html("https://www.livescores.com/football/world-cup/?tz=2")
+
+
+links <- html_nodes(pg, "#content-center > div")
+
+#content-center > div
+
+a <- bind_rows(lapply(html_attrs(links), function(x) data.frame(as.list(x), stringsAsFactors=FALSE)))
+
+```
+
