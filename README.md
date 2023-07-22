@@ -1,3 +1,3 @@
-# euro22
- mm-kisat 22
- https://pedusal.github.io/wc2022/
+# 23
+ mm-kisat 23
+ https://pedusal.github.io/wc23/
