@@ -730,7 +730,7 @@ as.datatable(
                       columnDefs = list(list(
                         className = 'dt-center', targets = 3:length(pelit)-1)),
                       scrollX = TRUE,
-                      scrollY = "440px", #y scrolli ja taulun pituus
+                      scrollY = "460px", #y scrolli ja taulun pituus
                       #scrollCollapse = TRUE,
                       fixedColumns = list(leftColumns = 2), #kiinnitetyt cols
                       fixedHeader = TRUE, #kiinnitetty tulosrivi
