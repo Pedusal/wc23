@@ -204,14 +204,14 @@ pistetaulu <- as.data.frame(pistetaulu)
 
 ```
 
-```{r LUO_maalintekijataulu, echo=FALSE, warning=FALSE}
+```{r LUO_maalintekijataulu, eval=FALSE, warning=FALSE, include=FALSE}
 ################ luo Maalintekijä taulu ja täytä se ######################
 maalintekijat <- matrix(NA,length(pelaajat)-1,7)
 colnames(maalintekijat) <- c("nimi","Maalikuningas", "Maalintekija1", "Maalintekija2", "Maalintekija3", "Maalintekija4", "Maalintekija5")
 maalintekijat <- as.data.frame(maalintekijat)
 ```
 
-```{r TAYTA_maalintekijataulu, echo=FALSE, warning=FALSE}
+```{r TAYTA_maalintekijataulu, eval=FALSE, warning=FALSE, include=FALSE}
 ### sisalto
 if (length(veikkaukset) > 0) {
 for (uu in 2:length(veikkaukset)) {
@@ -291,6 +291,101 @@ for (i in 1:length(maalintekijat[,1])) { # haetaan osallistujan maalintekijat
 }
 ###########################################################################
 ```
+
+
+
+```{r LUO_maalintekijataulu6, echo=FALSE, warning=FALSE}
+## Versio 6:lle maalintekijalle (mm23)
+################ luo Maalintekijä taulu ja täytä se ######################
+maalintekijat <- matrix(NA,length(pelaajat)-1,8)
+colnames(maalintekijat) <- c("nimi","Paras maalintekija", "Maalintekija1", "Maalintekija2", "Maalintekija3", "Maalintekija4", "Maalintekija5", "Maalintekija6")
+maalintekijat <- as.data.frame(maalintekijat)
+```
+
+```{r TAYTA_maalintekijataulu6, echo=FALSE, warning=FALSE}
+## Versio 6:lle maalintekijalle (mm23)
+### sisalto
+if (length(veikkaukset) > 0) {
+for (uu in 2:length(veikkaukset)) {
+  veikkaus <- data.frame(veikkaukset[uu])
+  
+  maalintekijat[uu-1,1] <- veikkaus[[1,5]]
+  
+  veikkaus <- veikkaus %>%   
+  filter(!is.na(veikkaus[,10])
+  )
+  
+  maalintekijat[uu-1,2]   <-  veikkaus$...14[2] #maalikuninkaa lisays
+  maalintekijat[uu-1,3:8] <- c(sort(veikkaus$...10[2:7])) #muut
+}
+}
+
+# luodaan nolla pistettä sisältävä vector ja laitetaan se tauluun
+maalintekijat$Maalit <- c(1:length(maalintekijat[,1]))*0 #sareke maaleille
+maalintekijat$Bonarit <- c(1:length(maalintekijat[,1]))*0 #sarake bonuksille
+
+######## lisataan maaleja maalit sarakkeeseen
+
+if (length(veikkaukset) > 0) {
+for (i in 1:length(maalintekijat[,1])) { # haetaan osallistujan maalintekijat
+  pelaajat_maalarit <- c(maalintekijat[i,3:8])
+  
+  for (ii in 1:length(pelaajat_maalarit)) { # haetaan pelaaja
+    maalari <-pelaajat_maalarit[ii]
+    
+    if (length(maaliporssi[,1])>0)  { #suorita jos maaliporssissa maalintekijoita
+    for (iii in 1:length(maaliporssi[,1])) { # katsotaan onko pelaaja maalipörssissa
+      maalintekija <- maaliporssi[iii,1]
+      if (is.na(maalintekija)) {
+        ## do nothing
+      } else if (maalari == maalintekija) { #jos maalari porssissa lisataan pisteita
+        maalintekijat$Maalit[i] <- as.numeric(maalintekijat$Maalit[i]) + 
+                                      as.numeric(maaliporssi[iii,3])
+      }
+      }
+    }
+    
+  }
+  
+}
+}
+
+
+######## lisataan bonukset bonus sarakkeeseen
+# haetaan bonus_maalarit
+bonus_maalarit  <- Eurodata_lkm %>% filter(
+  Tyyppi == "Maalintekijä",
+  lkm == 1
+)
+
+
+if (length(veikkaukset) > 0) {
+for (i in 1:length(maalintekijat[,1])) { # haetaan osallistujan maalintekijat
+  pelaajat_maalarit <- c(maalintekijat[i,3:8])
+  
+  for (ii in 1:length(pelaajat_maalarit)) { # haetaan pelaaja
+    maalari <-pelaajat_maalarit[ii]
+    
+    if (length(maaliporssi[,1])>0)  { #suorita jos maaliporssissa maalintekijoita
+    for (iii in 1:length(bonus_maalarit[,1])) { # katsotaan onko pelaaja bonari
+      bonari <- bonus_maalarit$Sisalto[iii] #bonari nimi 
+      if (is.na(bonari)) {
+        ## do nothing
+      } else if (bonari %in% maaliporssi[,1] && maalari == bonari) { #jos maalari porssissa lisataan pisteita
+        maalintekijat$Bonarit[i] <- as.numeric(maalintekijat$Bonarit[i]) + 5
+      }
+      }
+    }
+    
+  }
+  
+}
+}
+###########################################################################
+```
+
+
+
 
 
 ```{r LUO_final4taulu, echo=FALSE, warning=FALSE}
@@ -635,7 +730,7 @@ as.datatable(
                       columnDefs = list(list(
                         className = 'dt-center', targets = 3:length(pelit)-1)),
                       scrollX = TRUE,
-                      scrollY = "400px", #y scrolli ja taulun pituus
+                      scrollY = "440px", #y scrolli ja taulun pituus
                       #scrollCollapse = TRUE,
                       fixedColumns = list(leftColumns = 2), #kiinnitetyt cols
                       fixedHeader = TRUE, #kiinnitetty tulosrivi
@@ -648,7 +743,7 @@ as.datatable(
 
 ## Maalintekijät
 
-```{r maalintekijät piirtaminen, include=FALSE}
+```{r maalintekijät piirtaminen, echo=FALSE}
 library(formattable)
 library(dplyr)
 
@@ -723,7 +818,7 @@ as.datatable(
 
 
 #### Pelaajat joiden maalista bonuspisteitä
-```{r PIIRRA_bonusmaalintekijat, include=FALSE}
+```{r PIIRRA_bonusmaalintekijat, echo=FALSE}
 bonus_tekijat <- subset(Eurodata, ((Tyyppi == "Maalintekijä"& 
                                     Sisalto %in% bonus_maalarit$Sisalto     ) &
                                             !is.na(Sisalto)))
