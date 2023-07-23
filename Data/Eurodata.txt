@@ -10,80 +10,88 @@
 "9" "Suvi)" "Maalintekijä" "Maalintekijä3" "Alessia Russo" "Englanti" NA NA
 "10" "Suvi)" "Maalintekijä" "Maalintekijä4" "Alex Popp" "Saksa" NA NA
 "11" "Suvi)" "Maalintekijä" "Maalintekijä5" "Jennifer Hermoso" "Espanja" NA NA
-"12" "Ella" "TopScorer" "TS" "Smith" "Usa" NA NA
-"13" "Ella" "Mestari" "M" "USA" NA NA NA
-"14" "Ella" "Välierämaa" "Välierämaa1" "USA" NA NA NA
-"15" "Ella" "Välierämaa" "Välierämaa2" "Englanti" NA NA NA
-"16" "Ella" "Välierämaa" "Välierämaa3" "Ruotsi" NA NA NA
-"17" "Ella" "Välierämaa" "Välierämaa4" "Brasilia" NA NA NA
-"18" "Ella" "Maalintekijä" "Maalintekijä1" "Alexandra Popp" "Saksa" NA NA
-"19" "Ella" "Maalintekijä" "Maalintekijä2" "Rodman" "Usa" NA NA
-"20" "Ella" "Maalintekijä" "Maalintekijä3" "Bronze" "Englanti" NA NA
-"21" "Ella" "Maalintekijä" "Maalintekijä4" "Stina Blackstenius" "Ruotsi" NA NA
-"22" "Ella" "Maalintekijä" "Maalintekijä5" "Esther Gonzalez" "Espanja" NA NA
-"23" "TESSA AUVINEN" "TopScorer" "TS" "Rachel Daly" NA NA NA
-"24" "TESSA AUVINEN" "Mestari" "M" "Englanti" NA NA NA
-"25" "TESSA AUVINEN" "Välierämaa" "Välierämaa1" "USA" NA NA NA
-"26" "TESSA AUVINEN" "Välierämaa" "Välierämaa2" "Espanja" NA NA NA
-"27" "TESSA AUVINEN" "Välierämaa" "Välierämaa3" "Englanti" NA NA NA
-"28" "TESSA AUVINEN" "Välierämaa" "Välierämaa4" "Saksa" NA NA NA
-"29" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä1" "Alex Popp" "Saksa" NA NA
-"30" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä2" "Esther Gonzalez" "Espanja" NA NA
-"31" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä3" "Barbra Banda" "Sambia" NA NA
-"32" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä4" "Sam Kerr" "Australia" NA NA
-"33" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä5" "Rachel Daly" "Englanti" NA NA
-"34" "Juulia" "TopScorer" "TS" "Fridolina Rolfö" "Ruotsi" NA NA
-"35" "Juulia" "Mestari" "M" "Ruotsi" NA NA NA
-"36" "Juulia" "Välierämaa" "Välierämaa1" "Australia" NA NA NA
-"37" "Juulia" "Välierämaa" "Välierämaa2" "Ruotsi" NA NA NA
-"38" "Juulia" "Välierämaa" "Välierämaa3" "Englanti" NA NA NA
-"39" "Juulia" "Välierämaa" "Välierämaa4" "USA" NA NA NA
-"40" "Juulia" "Maalintekijä" "Maalintekijä1" "Fridolino Rolfö" "Ruotsi" NA NA
-"41" "Juulia" "Maalintekijä" "Maalintekijä2" "Sam Kerr" "Australia" NA NA
-"42" "Juulia" "Maalintekijä" "Maalintekijä3" "Alessia Russo" "Englanti" NA NA
-"43" "Juulia" "Maalintekijä" "Maalintekijä4" "Megan Rapinoe" "USA" NA NA
-"44" "Juulia" "Maalintekijä" "Maalintekijä5" "Alex Popp" "Saksa" NA NA
-"45" "Lassi" "TopScorer" "TS" "Alessia Russo" "Englanti" NA NA
-"46" "Lassi" "Mestari" "M" "Englanti" NA NA NA
-"47" "Lassi" "Välierämaa" "Välierämaa1" "Englanti" NA NA NA
-"48" "Lassi" "Välierämaa" "Välierämaa2" "Yhdysvallat" NA NA NA
-"49" "Lassi" "Välierämaa" "Välierämaa3" "Australia" NA NA NA
-"50" "Lassi" "Välierämaa" "Välierämaa4" "Brasilia" NA NA NA
-"51" "Lassi" "Maalintekijä" "Maalintekijä1" "Sam Kerr" "Australia" NA NA
-"52" "Lassi" "Maalintekijä" "Maalintekijä2" "Alessia Russo" "Englanti" NA NA
-"53" "Lassi" "Maalintekijä" "Maalintekijä3" "Alex Morgan" "Yhdysvallat" NA NA
-"54" "Lassi" "Maalintekijä" "Maalintekijä4" "Alexandra Popp" "Saksa" NA NA
-"55" "Lassi" "Maalintekijä" "Maalintekijä5" "Barbra Banda" "Sambia" NA NA
-"56" "Rebecca Kindstedt" "TopScorer" "TS" "Alex Morgan" "USA" NA NA
-"57" "Rebecca Kindstedt" "Mestari" "M" "USA" NA NA NA
-"58" "Rebecca Kindstedt" "Välierämaa" "Välierämaa1" "USA" NA NA NA
-"59" "Rebecca Kindstedt" "Välierämaa" "Välierämaa2" "Ranska" NA NA NA
-"60" "Rebecca Kindstedt" "Välierämaa" "Välierämaa3" "Japani" NA NA NA
-"61" "Rebecca Kindstedt" "Välierämaa" "Välierämaa4" "Saksa" NA NA NA
-"62" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä1" "Aada Hegerberg" "Norja" NA NA
-"63" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä2" "Alex Popp" "Saksa" NA NA
-"64" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä3" "Eugenie Le Sommer" "Ranska" NA NA
-"65" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä4" "Alex Morgan" "Usa" NA NA
-"66" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä5" "Diani Kadidiatou" "Ranska" NA NA
-"67" "Petteri Salo" "TopScorer" "TS" "Alex Morgan" "USA" NA NA
-"68" "Petteri Salo" "Mestari" "M" "USA" NA NA NA
-"69" "Petteri Salo" "Välierämaa" "Välierämaa1" "USA" NA NA NA
-"70" "Petteri Salo" "Välierämaa" "Välierämaa2" "Englanti" NA NA NA
-"71" "Petteri Salo" "Välierämaa" "Välierämaa3" "Espanja" NA NA NA
-"72" "Petteri Salo" "Välierämaa" "Välierämaa4" "Saksa" NA NA NA
-"73" "Petteri Salo" "Maalintekijä" "Maalintekijä1" "Alba Redondo" "Espanja" NA NA
-"74" "Petteri Salo" "Maalintekijä" "Maalintekijä2" "Trinity Rodman" "USA" NA NA
-"75" "Petteri Salo" "Maalintekijä" "Maalintekijä3" "Alex Morgan" "USA" NA NA
-"76" "Petteri Salo" "Maalintekijä" "Maalintekijä4" "Sophia Smith" "USA" NA NA
-"77" "Petteri Salo" "Maalintekijä" "Maalintekijä5" "Sam Kerr" "Australia" NA NA
-"78" "Seppo" "TopScorer" "TS" "Alex Putellas" "Esp" NA NA
-"79" "Seppo" "Mestari" "M" "USA" NA NA NA
-"80" "Seppo" "Välierämaa" "Välierämaa1" "USA" NA NA NA
-"81" "Seppo" "Välierämaa" "Välierämaa2" "Saksa" NA NA NA
-"82" "Seppo" "Välierämaa" "Välierämaa3" "Englanti" NA NA NA
-"83" "Seppo" "Välierämaa" "Välierämaa4" "Espanja" NA NA NA
-"84" "Seppo" "Maalintekijä" "Maalintekijä1" "Guro Reiten" "Norja" NA NA
-"85" "Seppo" "Maalintekijä" "Maalintekijä2" "Sam Kerr" "Aus" NA NA
-"86" "Seppo" "Maalintekijä" "Maalintekijä3" "Ashley Lawrence" "Can" NA NA
-"87" "Seppo" "Maalintekijä" "Maalintekijä4" "Alisha Lehmann" "Sui" NA NA
-"88" "Seppo" "Maalintekijä" "Maalintekijä5" "Alexia Putellas" "Spa" NA NA
+"12" "Suvi)" "Maalintekijä" "Maalintekijä6" "Alex Morgan" "Usa" NA NA
+"13" "Ella" "TopScorer" "TS" "Sophia Smith" "Usa" NA NA
+"14" "Ella" "Mestari" "M" "USA" NA NA NA
+"15" "Ella" "Välierämaa" "Välierämaa1" "USA" NA NA NA
+"16" "Ella" "Välierämaa" "Välierämaa2" "Englanti" NA NA NA
+"17" "Ella" "Välierämaa" "Välierämaa3" "Ruotsi" NA NA NA
+"18" "Ella" "Välierämaa" "Välierämaa4" "Brasilia" NA NA NA
+"19" "Ella" "Maalintekijä" "Maalintekijä1" "Alex Popp" "Saksa" NA NA
+"20" "Ella" "Maalintekijä" "Maalintekijä2" "Trinity Rodman" "Usa" NA NA
+"21" "Ella" "Maalintekijä" "Maalintekijä3" "Lucy Bronze" "Englanti" NA NA
+"22" "Ella" "Maalintekijä" "Maalintekijä4" "Stina Blackstenius" "Ruotsi" NA NA
+"23" "Ella" "Maalintekijä" "Maalintekijä5" "Esther Gonzalez" "Espanja" NA NA
+"24" "Ella" "Maalintekijä" "Maalintekijä6" "Sophia Smith" "USA" NA NA
+"25" "TESSA AUVINEN" "TopScorer" "TS" "Rachel Daly" NA NA NA
+"26" "TESSA AUVINEN" "Mestari" "M" "Englanti" NA NA NA
+"27" "TESSA AUVINEN" "Välierämaa" "Välierämaa1" "USA" NA NA NA
+"28" "TESSA AUVINEN" "Välierämaa" "Välierämaa2" "Espanja" NA NA NA
+"29" "TESSA AUVINEN" "Välierämaa" "Välierämaa3" "Englanti" NA NA NA
+"30" "TESSA AUVINEN" "Välierämaa" "Välierämaa4" "Saksa" NA NA NA
+"31" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä1" "Alex Popp" "Saksa" NA NA
+"32" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä2" "Esther Gonzalez" "Espanja" NA NA
+"33" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä3" "Barbra Banda" "Sambia" NA NA
+"34" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä4" "Sam Kerr" "Australia" NA NA
+"35" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä5" "Rachel Daly" "Englanti" NA NA
+"36" "TESSA AUVINEN" "Maalintekijä" "Maalintekijä6" "Sophia Smith" "USA" NA NA
+"37" "Juulia" "TopScorer" "TS" "Fridolina Rolfö" "Ruotsi" NA NA
+"38" "Juulia" "Mestari" "M" "Ruotsi" NA NA NA
+"39" "Juulia" "Välierämaa" "Välierämaa1" "Australia" NA NA NA
+"40" "Juulia" "Välierämaa" "Välierämaa2" "Ruotsi" NA NA NA
+"41" "Juulia" "Välierämaa" "Välierämaa3" "Englanti" NA NA NA
+"42" "Juulia" "Välierämaa" "Välierämaa4" "USA" NA NA NA
+"43" "Juulia" "Maalintekijä" "Maalintekijä1" "Fridolino Rolfö" "Ruotsi" NA NA
+"44" "Juulia" "Maalintekijä" "Maalintekijä2" "Sam Kerr" "Australia" NA NA
+"45" "Juulia" "Maalintekijä" "Maalintekijä3" "Alessia Russo" "Englanti" NA NA
+"46" "Juulia" "Maalintekijä" "Maalintekijä4" "Megan Rapinoe" "USA" NA NA
+"47" "Juulia" "Maalintekijä" "Maalintekijä5" "Alex Popp" "Saksa" NA NA
+"48" "Juulia" "Maalintekijä" "Maalintekijä6" "Mariona Caldentey" "Espanja" NA NA
+"49" "Lassi" "TopScorer" "TS" "Alessia Russo" "Englanti" NA NA
+"50" "Lassi" "Mestari" "M" "Englanti" NA NA NA
+"51" "Lassi" "Välierämaa" "Välierämaa1" "Englanti" NA NA NA
+"52" "Lassi" "Välierämaa" "Välierämaa2" "USA" NA NA NA
+"53" "Lassi" "Välierämaa" "Välierämaa3" "Australia" NA NA NA
+"54" "Lassi" "Välierämaa" "Välierämaa4" "Brasilia" NA NA NA
+"55" "Lassi" "Maalintekijä" "Maalintekijä1" "Sam Kerr" "Australia" NA NA
+"56" "Lassi" "Maalintekijä" "Maalintekijä2" "Alessia Russo" "Englanti" NA NA
+"57" "Lassi" "Maalintekijä" "Maalintekijä3" "Alex Morgan" "Yhdysvallat" NA NA
+"58" "Lassi" "Maalintekijä" "Maalintekijä4" "Alex Popp" "Saksa" NA NA
+"59" "Lassi" "Maalintekijä" "Maalintekijä5" "Barbra Banda" "Sambia" NA NA
+"60" "Lassi" "Maalintekijä" "Maalintekijä6" "Debinha" "Brasilia" NA NA
+"61" "Rebecca Kindstedt" "TopScorer" "TS" "Alex Morgan" "USA" NA NA
+"62" "Rebecca Kindstedt" "Mestari" "M" "USA" NA NA NA
+"63" "Rebecca Kindstedt" "Välierämaa" "Välierämaa1" "USA" NA NA NA
+"64" "Rebecca Kindstedt" "Välierämaa" "Välierämaa2" "Ranska" NA NA NA
+"65" "Rebecca Kindstedt" "Välierämaa" "Välierämaa3" "Japani" NA NA NA
+"66" "Rebecca Kindstedt" "Välierämaa" "Välierämaa4" "Saksa" NA NA NA
+"67" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä1" "Aada Hegerberg" "Norja" NA NA
+"68" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä2" "Alex Popp" "Saksa" NA NA
+"69" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä3" "Eugenie Le Sommer" "Ranska" NA NA
+"70" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä4" "Alex Morgan" "Usa" NA NA
+"71" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä5" "Diani Kadidiatou" "Ranska" NA NA
+"72" "Rebecca Kindstedt" "Maalintekijä" "Maalintekijä6" "Megan Rapinoe" "Usa" NA NA
+"73" "Petteri Salo" "TopScorer" "TS" "Alex Morgan" "USA" NA NA
+"74" "Petteri Salo" "Mestari" "M" "USA" NA NA NA
+"75" "Petteri Salo" "Välierämaa" "Välierämaa1" "USA" NA NA NA
+"76" "Petteri Salo" "Välierämaa" "Välierämaa2" "Englanti" NA NA NA
+"77" "Petteri Salo" "Välierämaa" "Välierämaa3" "Espanja" NA NA NA
+"78" "Petteri Salo" "Välierämaa" "Välierämaa4" "Saksa" NA NA NA
+"79" "Petteri Salo" "Maalintekijä" "Maalintekijä1" "Alba Redondo" "Espanja" NA NA
+"80" "Petteri Salo" "Maalintekijä" "Maalintekijä2" "Trinity Rodman" "USA" NA NA
+"81" "Petteri Salo" "Maalintekijä" "Maalintekijä3" "Alex Morgan" "USA" NA NA
+"82" "Petteri Salo" "Maalintekijä" "Maalintekijä4" "Sophia Smith" "USA" NA NA
+"83" "Petteri Salo" "Maalintekijä" "Maalintekijä5" "Sam Kerr" "Australia" NA NA
+"84" "Petteri Salo" "Maalintekijä" "Maalintekijä6" "Stina Blackstenius" "Ruotsi" NA NA
+"85" "Seppo" "TopScorer" "TS" "Alex Putellas" "Esp" NA NA
+"86" "Seppo" "Mestari" "M" "USA" NA NA NA
+"87" "Seppo" "Välierämaa" "Välierämaa1" "USA" NA NA NA
+"88" "Seppo" "Välierämaa" "Välierämaa2" "Saksa" NA NA NA
+"89" "Seppo" "Välierämaa" "Välierämaa3" "Englanti" NA NA NA
+"90" "Seppo" "Välierämaa" "Välierämaa4" "Espanja" NA NA NA
+"91" "Seppo" "Maalintekijä" "Maalintekijä1" "Guro Reiten" "Norja" NA NA
+"92" "Seppo" "Maalintekijä" "Maalintekijä2" "Sam Kerr" "Aus" NA NA
+"93" "Seppo" "Maalintekijä" "Maalintekijä3" "Ashley Lawrence" "Can" NA NA
+"94" "Seppo" "Maalintekijä" "Maalintekijä4" "Alisha Lehmann" "Sui" NA NA
+"95" "Seppo" "Maalintekijä" "Maalintekijä5" "Alexia Putellas" "Spa" NA NA
+"96" "Seppo" "Maalintekijä" "Maalintekijä6" "Sophia Smith" "USA" NA NA
