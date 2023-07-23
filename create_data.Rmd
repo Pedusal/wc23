@@ -142,6 +142,11 @@ for (i in 2:length(veikkaukset)) {
                     c(veikkaus_apu[1,5], "Maalintekijä", "Maalintekijä5",
                       veikkaus_apu[9,10],veikkaus_apu[9,11],NA,NA)
               )
+          # kuudes maalintekija (mm23)   
+                Eurodata <- rbind(Eurodata,
+                    c(veikkaus_apu[1,5], "Maalintekijä", "Maalintekijä6",
+                      veikkaus_apu[10,10],veikkaus_apu[10,11],NA,NA)
+              )
  
 }
 }
